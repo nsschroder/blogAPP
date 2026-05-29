@@ -1,7 +1,7 @@
-import mongoose from "mongoose"
+import mongoose, { mongo } from "mongoose"
 const Schema = mongoose.Schema
 
-const Categoria = new schema({
+const Categoria = new Schema({
     name: {
         type: String,
         required: true
@@ -9,11 +9,13 @@ const Categoria = new schema({
     slug: {
         type: String,
         required: true,
-        default: "null"
+        default: ""
     },
     date: {
         type: Date,
-        default: Date.now()
+        default: Date.now
 
     }
 })
+
+export default mongoose.model('categorias', Categoria)
