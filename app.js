@@ -29,7 +29,13 @@ mongoose.connect("mongodb://localhost/blogapp").then(() => {
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 app.use(express.static(path.join(__dirname, 'public')))
+
+app.use((req, res, next) => {
+    console.log("PRAZER, MIDWARE!")
+    next()
+})
 //Rotas
+
 
 app.get('/', (req, res) => {
     res.send('Rota Principal')
