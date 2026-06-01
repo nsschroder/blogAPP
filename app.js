@@ -4,11 +4,31 @@ import mongoose from 'mongoose'
 import { fileURLToPath } from 'url'
 import { engine } from 'express-handlebars'
 import admin from './routes/admin.js'
+import session from 'express-session'
+import flash from 'connect-flash'
 
 const app = express()
 
 
 // Configs
+
+// Sessao
+app.use(session({
+    secret: "projetoblogapp",
+    resave: true,
+    saveUninitialized: true
+}))
+app.use(flash())
+
+// Middleware
+
+app.use((req, res, next) => {
+    res.locals.success_msg = req.flash("success_msg")
+    res.locals.error_msg = req.flash("error_msg")
+})
+next()
+
+
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
@@ -30,10 +50,6 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 app.use(express.static(path.join(__dirname, 'public')))
 
-app.use((req, res, next) => {
-    console.log("PRAZER, MIDWARE!")
-    next()
-})
 //Rotas
 
 
