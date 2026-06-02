@@ -21,16 +21,43 @@ router.get('/categoria/add', (req, res) => {
 })
 
 router.post('/categoria/new', (req, res) => {
-    const newCat = {
-        name: req.body.name,
-        slug: req.body.slug
+
+    let erros = []
+
+    if (!req.body.name) {
+        erros.push({ text: "Nome inválido!" })
     }
 
-    new Categoria(newCat).save().then(() => {
-        console.log("Categoria salva com sucesso...")
-    }).catch((error) => {
-        console.log("Erro ao criar nova categoria...")
-    })
+    if (!req.body.slug) {
+        erros.push({ text: "Slug inválido!" })
+    }
+
+    if (req.body.name && req.body.name.length < 2) {
+        erros.push({ text: "Mínimo de 2 caracteres no nome!" })
+    }
+
+    if (erros.length > 0) {
+        return res.render("admin/addcategoria", { erros })
+    } else {
+        const newCat = {
+            name: req.body.name,
+            slug: req.body.slug
+        }
+
+        new Categoria(newCat)
+            .save()
+            .then(() => {
+                req.flash("success_msg", "Categoria criada com sucesso!")
+                res.redirect("/admin/categoria")
+            })
+            .catch((error) => {
+                req.flash("error_msg", "Houve um erro ao criar a categoria!")
+                console.log("Erro ao criar nova categoria...", error)
+            })
+
+    }
+
+
 })
 
 export default router
