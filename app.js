@@ -34,7 +34,18 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
 // Handlebars
-app.engine('handlebars', engine())
+// Converter em "XX de janeiro de 2026"
+app.engine('handlebars', engine({
+    helpers: {
+        formatDate: function (date) {
+            return new Intl.DateTimeFormat('pt-BR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            }).format(new Date(date))
+        }
+    }
+}))
 app.set('view engine', 'handlebars')
 app.set('views', './views')
 

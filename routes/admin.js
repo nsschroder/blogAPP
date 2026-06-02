@@ -13,7 +13,12 @@ router.get('/post', (req, res) => {
 })
 
 router.get('/categoria', (req, res) => {
-    res.render("admin/categorias")
+    Categoria.find().sort({ date: 'desc' }).lean().then((categoria) => {
+        res.render("admin/categorias", { categoria: categoria })
+    }).catch((error) => {
+        req.flash("error_msg", "Houve um erro ao listar as categorias")
+        res.redirect("/admin")
+    })
 })
 
 router.get('/categoria/add', (req, res) => {
@@ -57,6 +62,16 @@ router.post('/categoria/new', (req, res) => {
 
     }
 
+
+})
+
+router.get('/categoria/edit/:id', (req, res) => {
+    Categoria.findOne({ _id: req.params.id }).lean().then((categoria) => {
+        res.render("admin/editcategoria", { categoria: categoria })
+    }).catch((error) => {
+        req.flash("error_msg", "Essa categoria não existe.")
+        res.redirect("/admin/categoria")
+    })
 
 })
 
