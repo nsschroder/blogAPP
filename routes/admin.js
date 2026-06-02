@@ -51,8 +51,8 @@ router.post('/categoria/new', (req, res) => {
                 res.redirect("/admin/categoria")
             })
             .catch((error) => {
-                req.flash("error_msg", "Houve um erro ao criar a categoria!")
-                console.log("Erro ao criar nova categoria...", error)
+                req.flash("error_msg", "Houve um erro ao criar a categoria, tente novamente!")
+                res.redirect("/admin")
             })
 
     }
