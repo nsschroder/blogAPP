@@ -132,7 +132,7 @@ router.post("/categoria/del", (req, res) => {
 
 router.get("/postagem", (req, res) => {
 
-    Post.find().populate("Categoria").sort({ date: "desc" }).then((postagem) => {
+    Post.find().lean().populate({ path: 'cat', strictPopulate: false }).sort({ date: "desc" }).then((postagem) => {
         res.render("admin/posts", { postagem: postagem })
     }).catch((error) => {
         req.flash("error_msg", "Houve um erro ao listar as postagens!")

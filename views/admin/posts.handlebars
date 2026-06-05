@@ -1,3 +1,30 @@
-<h2>Lista de postagem:</h2>
+<h2>Lista de postagens</h2>
 <hr>
-<a href="/admin/postagem/add"><button class="btn btn-success">Adicionar</button></a>
+
+<div class="mb-4">
+    <a href="/admin/postagem/add" class="btn btn-success">
+        Nova postagem
+    </a>
+</div>
+
+{{#each postagem}}
+
+<div class="card mb-3">
+    <div class="card-body">
+
+        <h4 class="mb-2">{{title}}</h4>
+
+        <p class="mb-3">{{desc}}</p>
+
+        <small class="text-muted">
+            Data de postagem: {{formatDate date}}
+        </small>
+
+    </div>
+</div>
+
+{{else}}
+
+<h4>Nenhuma postagem registrada!</h4>
+
+{{/each}}
