@@ -6,6 +6,7 @@ import { engine } from 'express-handlebars'
 import admin from './routes/admin.js'
 import session from 'express-session'
 import flash from 'connect-flash'
+import Post from './models/Post.js'
 
 const app = express()
 
@@ -66,7 +67,17 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 
 app.get('/', (req, res) => {
-    res.send('Rota Principal')
+    Post.find().populate("cat").sort({ date: "desc" }).then((postagem) => {
+        res.render("index", { postagem: postagem })
+    }).catch((error) => {
+        req.flash("error_msg", "Houve um erro interno")
+        res.redirect("/404")
+    })
+
+})
+
+app.get("/404", (re, res) => {
+    res.send("Erro 404!")
 })
 
 app.use('/admin', admin)
