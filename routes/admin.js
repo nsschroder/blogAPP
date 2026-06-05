@@ -1,6 +1,7 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import Categoria from '../models/Categoria.js'
+import Post from '../models/Post.js'
 
 const router = express.Router()
 
@@ -129,5 +130,75 @@ router.post("/categoria/del", (req, res) => {
     })
 })
 
+router.get("/postagem", (req, res) => {
+
+    Post.find().populate("Categoria").sort({ date: "desc" }).then((postagem) => {
+        res.render("admin/posts", { postagem: postagem })
+    }).catch((error) => {
+        req.flash("error_msg", "Houve um erro ao listar as postagens!")
+        res.redirect("/admin")
+    })
+
+})
+
+router.get("/postagem/add", (req, res) => {
+    Categoria.find().lean().then((categoria) => {
+        res.render("admin/addpost", { categoria: categoria })
+    }).catch((error) => {
+        req.flash("error_msg", "Houve um erro ao carregar o formulário!")
+        res.redirect("/admin")
+    })
+
+})
+
+router.post("/postagem/new", (req, res) => {
+
+    let erros = []
+
+    if (!req.body.title) {
+        erros.push({ text: "Título inválido!" })
+    }
+
+    if (!req.body.slug) {
+        erros.push({ text: "Slug inválido!" })
+    }
+
+    if (!req.body.desc) {
+        erros.push({ text: "Descrição inválida!" })
+    }
+
+    if (!req.body.cont) {
+        erros.push({ text: "Conteúdo inválido!" })
+    }
+
+    if (!req.body.cat) {
+        erros.push({ text: "Selecione uma categoria!" })
+    }
+
+    if (erros.length > 0) {
+
+        res.render("admin/addpost", { erros: erros })
+    } else {
+
+        const newPost = {
+            title: req.body.title,
+            slug: req.body.slug,
+            desc: req.body.desc,
+            cont: req.body.cont,
+            cat: req.body.cat
+        }
+        new Post(newPost)
+            .save()
+            .then(() => {
+                req.flash("success_msg", "Postagem criada com sucesso!")
+                res.redirect("/admin/postagem")
+            })
+            .catch((error) => {
+                console.log(error)
+                req.flash("error_msg", "Erro ao criar postagem!")
+                res.redirect("/admin/postagem/add")
+            })
+    }
+})
 
 export default router

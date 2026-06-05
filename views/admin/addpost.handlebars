@@ -1,0 +1,68 @@
+{{#each erros}}
+<div class="alert alert-danger">{{text}}</div>
+{{else}}
+
+{{/each}}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card mt-4">
+            <div class="card-body">
+
+                <h4 class="mb-4">Nova postagem</h4>
+
+                <form action="/admin/postagem/new" method="post">
+
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Título:</label>
+                        <input type="text" name="title" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="slug" class="form-label">Slug:</label>
+                        <input type="text" name="slug" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="desc" class="form-label">Descrição:</label>
+                        <input type="text" name="desc" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="cat" class="form-label">Categoria:</label>
+                        <select name="cat" class="form-select" required>
+
+                            <option value="" selected disabled>
+                                Selecione uma categoria
+                            </option>
+
+                            {{#each categoria}}
+                            <option value="{{_id}}">
+                                {{name}}
+                            </option>
+                            {{else}}
+                            <option value="">
+                                Nenhuma categoria encontrada!
+                            </option>
+                            {{/each}}
+
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="cont" class="form-label">Conteúdo:</label>
+                        <textarea name="cont" class="form-control" rows="6" required></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success">
+                            Criar postagem
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
