@@ -8,7 +8,7 @@
 <div class="card">
     <div class="card-body">
         <form action="/admin/categoria/new" method="post">
-
+            <input type="hidden" name="id" value="{{categoria.id}}">
             <label for="name">Nome:</label>
             <input type="text" id="name" name="name" class="form-control" value="{{categoria.name}}">
 
