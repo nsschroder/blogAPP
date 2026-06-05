@@ -201,4 +201,119 @@ router.post("/postagem/new", (req, res) => {
     }
 })
 
+router.get("/postagem/edit/:id", (req, res) => {
+
+    Post.findOne({ _id: req.params.id }).populate("cat").lean().then((postagem) => {
+
+        Categoria.find().lean().then((categoria) => {
+            res.render("admin/editpost", { categoria: categoria, postagem: postagem })
+
+        }).catch((error) => {
+            req.flash("error_msg", "Houve um erro ao listar as categorias!")
+            res.redirect("/admin/postagem")
+        })
+
+
+    }).catch((error) => {
+        req.flash("error_msg", "Houve um erro ao carregar o formulário de edição!")
+        res.redirect("/admin/postagem")
+    })
+
+})
+
+router.post("/postagem/edit", (req, res) => {
+
+    let erros = []
+
+    if (!req.body.title) {
+        erros.push({ text: "Título inválido!" })
+    }
+
+    if (!req.body.slug) {
+        erros.push({ text: "Slug inválido!" })
+    }
+
+    if (!req.body.desc) {
+        erros.push({ text: "Descrição inválida!" })
+    }
+
+    if (!req.body.cont) {
+        erros.push({ text: "Conteúdo inválido!" })
+    }
+
+    if (!req.body.cat) {
+        erros.push({ text: "Selecione uma categoria!" })
+    }
+
+    if (erros.length > 0) {
+
+        return Categoria.find().lean().then((categoria) => {
+
+            Post.findOne({ _id: req.body.id })
+                .populate("cat")
+                .lean()
+                .then((postagem) => {
+
+                    res.render("admin/editpost", {
+                        erros,
+                        categoria,
+                        postagem
+                    })
+
+                })
+
+        })
+
+    }
+
+    Post.findOne({ _id: req.body.id })
+        .then((postagem) => {
+
+            postagem.title = req.body.title
+            postagem.slug = req.body.slug
+            postagem.desc = req.body.desc
+            postagem.cont = req.body.cont
+            postagem.cat = req.body.cat
+
+            return postagem.save()
+
+        })
+        .then(() => {
+
+            req.flash("success_msg", "Postagem editada com sucesso!")
+            res.redirect("/admin/postagem")
+
+        })
+        .catch((error) => {
+
+            console.log(error)
+
+            req.flash("error_msg", "Houve um erro ao editar a postagem!")
+            res.redirect("/admin/postagem")
+
+        })
+
+})
+
+router.post("/postagem/del", (req, res) => {
+
+    Post.deleteOne({ _id: req.body.id })
+        .then(() => {
+
+            req.flash("success_msg", "Postagem excluída com sucesso!")
+            res.redirect("/admin/postagem")
+
+        })
+        .catch((error) => {
+
+            console.log(error)
+
+            req.flash("error_msg", "Erro ao excluir postagem!")
+            res.redirect("/admin/postagem")
+
+        })
+
+})
+
+
 export default router
