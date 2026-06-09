@@ -1,0 +1,55 @@
+<div class="row justify-content-center">
+
+    <div class="col-lg-8">
+
+        <div class="card mt-4">
+
+            <div class="card-body">
+
+                <h1 class="mb-3">
+                    {{postagem.title}}
+                </h1>
+
+                <div class="mb-4">
+
+                    <span class="badge bg-secondary">
+                        {{postagem.cat.name}}
+                    </span>
+
+                    <small class="text-muted ms-2">
+                        Publicado em {{formatDate postagem.date}}
+                    </small>
+
+                </div>
+
+                <p class="lead">
+                    {{postagem.desc}}
+                </p>
+
+                <hr>
+
+                <div class="mt-4">
+
+                    <p style="white-space: pre-line;">
+                        {{postagem.cont}}
+                    </p>
+
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between">
+
+                    <a href="/" class="btn btn-outline-secondary">
+                        ← Voltar
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

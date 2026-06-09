@@ -1,5 +1,5 @@
-<div class="p-5 mb-4 bg-dark text-white rounded-3">
-    <div class="container py-5">
+<div class="p-5 mb-5 bg-dark text-white rounded-3">
+    <div class="container py-4">
 
         <h1 class="display-4 fw-bold">
             POST'S.IO
@@ -16,8 +16,46 @@
         </p>
 
         <a href="#" class="btn btn-primary btn-lg">
-            Teste agora
+            Explorar postagens
         </a>
 
     </div>
 </div>
+
+<h2 class="mb-4">Últimas postagens</h2>
+
+{{#each postagem}}
+
+<div class="card mb-3">
+
+    <div class="card-body">
+
+        <h4>{{title}}</h4>
+
+        <p>{{desc}}</p>
+
+        <small class="text-muted">
+            {{formatDate date}}
+        </small>
+
+        <br><br>
+
+        <span class="badge bg-secondary">
+            {{cat.name}}
+        </span>
+
+        <a href="/postagem/{{slug}}" class="btn btn-primary btn-sm float-end">
+            Ler mais
+        </a>
+
+    </div>
+
+</div>
+
+{{else}}
+
+<div class="alert alert-info">
+    Nenhuma postagem encontrada.
+</div>
+
+{{/each}}

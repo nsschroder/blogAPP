@@ -7,6 +7,7 @@ import admin from './routes/admin.js'
 import session from 'express-session'
 import flash from 'connect-flash'
 import Post from './models/Post.js'
+import Categoria from './models/Categoria.js'
 
 const app = express()
 
@@ -67,13 +68,82 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 
 app.get('/', (req, res) => {
-    Post.find().populate("cat").sort({ date: "desc" }).then((postagem) => {
+    Post.find().populate("cat").sort({ date: "desc" }).lean().then((postagem) => {
         res.render("index", { postagem: postagem })
     }).catch((error) => {
         req.flash("error_msg", "Houve um erro interno")
         res.redirect("/404")
     })
 
+})
+
+app.get('/categoria', (req, res) => {
+    Categoria.find().lean().then((categoria) => {
+        res.render("categoria/index", { categoria: categoria })
+
+    }).catch((error) => {
+        req.flash("error_msg", "Houve um erro interno")
+        res.redirect('/')
+    })
+})
+
+app.get('/categoria/:slug', (req, res) => {
+
+    Categoria.findOne({ slug: req.params.slug })
+        .lean()
+        .then((categoria) => {
+
+            if (categoria) {
+
+                Post.find({ cat: categoria._id })
+                    .lean()
+                    .then((postagem) => {
+
+                        res.render("categoria/postagem", {
+                            postagem: postagem,
+                            categoria: categoria
+                        })
+
+                    })
+                    .catch((error) => {
+
+                        req.flash("error_msg", "Houve um erro ao listar os posts")
+                        res.redirect('/')
+
+                    })
+
+            } else {
+
+                req.flash("error_msg", "Essa categoria não existe")
+                res.redirect('/')
+
+            }
+
+        })
+        .catch((error) => {
+
+            req.flash("error_msg", "Houve um erro interno")
+            res.redirect('/')
+
+        })
+
+})
+
+
+
+app.get('/postagem/:slug', (req, res) => {
+    Post.findOne({ slug: req.params.slug }).populate("cat").lean().then((postagem) => {
+        if (postagem) {
+            res.render("postagem/index", { postagem: postagem })
+        } else {
+            req.flash("error_msg", "Essa postagem não existe")
+            res.redirect("/")
+
+        }
+    }).catch((error) => {
+        req.flash("error_msg", "Houve um erro interno")
+        res.redirect("/")
+    })
 })
 
 app.get("/404", (re, res) => {

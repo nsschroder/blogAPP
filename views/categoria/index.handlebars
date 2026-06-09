@@ -1,0 +1,45 @@
+<h1 class="mb-4">Categorias</h1>
+
+<p class="text-muted mb-4">
+    Navegue pelas categorias disponíveis no blog.
+</p>
+
+<div class="row">
+
+    {{#each categoria}}
+
+    <div class="col-md-6 col-lg-4 mb-4">
+
+        <div class="card h-100">
+
+            <div class="card-body">
+
+                <h4 class="card-title">
+                    {{name}}
+                </h4>
+
+                <p class="text-muted">
+                    Explore todas as postagens desta categoria.
+                </p>
+
+                <a href="/categoria/{{slug}}" class="btn btn-outline-primary">
+                    Ver postagens
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {{else}}
+
+    <div class="col-12">
+        <div class="alert alert-info">
+            Nenhuma categoria cadastrada.
+        </div>
+    </div>
+
+    {{/each}}
+
+</div>
