@@ -1,5 +1,6 @@
 import express from 'express'
 import User from '../models/User.js'
+import bcrypt from 'bcryptjs'
 
 const router = express.Router()
 
@@ -24,11 +25,9 @@ router.post('/registro', (req, res) => {
     }
 
     if (req.body.password) {
-
         if (req.body.password.length < 6) {
             error.push({ text: "A senha deve ter pelo menos 6 caracteres" })
         }
-
 
         if (req.body.password !== req.body.password2) {
             error.push({ text: "As senhas não conferem" })
@@ -38,9 +37,47 @@ router.post('/registro', (req, res) => {
     if (error.length > 0) {
         res.render("users/registro", { error: error })
     } else {
+        User.findOne({ email: req.body.email }).then((user) => {
+            if (user) {
+                req.flash("error_msg", "E-mail já cadastrado")
 
-        res.send("Passou nas validações com sucesso!");
+                res.redirect("/usuarios/registro")
+            } else {
+                const newUser = new User({
+                    name: req.body.name,
+                    email: req.body.email,
+                    password: req.body.password
+                })
+                // criptografia da senha --------------------------------------------------------------
+                bcrypt.genSalt(10, (error, salt) => {
+                    bcrypt.hash(newUser.password, salt, (error, hash) => {
+                        if (error) {
+                            req.flash("error_msg", "Houve um erro ao salvar usuário")
+                            res.redirect("/")
+                        }
+
+                        newUser.password = hash
+                        // ----------------------------------------------------- -------------------------------                      
+                        newUser.save().then(() => {
+                            req.flash("success_msg", "Usuário criado com sucesso!")
+                            res.redirect("/")
+                        }).catch((error) => {
+                            req.flash("error_msg", "Houve um erro ao criar usuário!")
+
+                            res.redirect("/usuarios/registro")
+                        })
+                    })
+                })
+            }
+        }).catch((error) => {
+            req.flash("error_msg", "Houve um erro interno")
+            res.redirect("/")
+        })
     }
+})
+
+router.get("/login", (req, res) => {
+    res.render("users/login")
 })
 
 export default router
