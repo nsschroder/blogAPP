@@ -8,6 +8,7 @@ import session from 'express-session'
 import flash from 'connect-flash'
 import Post from './models/Post.js'
 import Categoria from './models/Categoria.js'
+import users from './routes/users.js'
 
 const app = express()
 
@@ -21,6 +22,10 @@ app.use(session({
     saveUninitialized: true
 }))
 app.use(flash())
+
+// Usuarios
+
+app.use('/usuarios', users)
 
 // Middleware
 
