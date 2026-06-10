@@ -27,18 +27,21 @@
             </ul>
 
             {{#if user}}
-
-            {{else}}
             <div class="d-flex gap-2">
-                <a href="/usuarios/login" class="btn btn-outline-light">
-                    Login
+                <a href="/usuarios/logout" class="btn btn-outline-light">
+                    Sair
                 </a>
+                {{else}}
+                <div class="d-flex gap-2">
+                    <a href="/usuarios/login" class="btn btn-outline-light">
+                        Login
+                    </a>
 
-                <a href="/usuarios/registro" class="btn btn-success">
-                    Registrar
-                </a>
+                    <a href="/usuarios/registro" class="btn btn-success">
+                        Registrar
+                    </a>
+                </div>
+                {{/if}}
             </div>
-            {{/if}}
         </div>
-    </div>
 </nav>
