@@ -2,18 +2,19 @@ import express from 'express'
 import mongoose from 'mongoose'
 import Categoria from '../models/Categoria.js'
 import Post from '../models/Post.js'
+import { eAdmin } from '../helpers/eAdmin.js'
 
 const router = express.Router()
 
-router.get('/', (req, res) => {
+router.get('/', eAdmin, (req, res) => {
     res.render("admin/index")
 })
 
-router.get('/post', (req, res) => {
+router.get('/post', eAdmin, (req, res) => {
     res.send("Página de posts")
 })
 
-router.get('/categoria', (req, res) => {
+router.get('/categoria', eAdmin, (req, res) => {
     Categoria.find().sort({ date: 'desc' }).lean().then((categoria) => {
         res.render("admin/categorias", { categoria: categoria })
     }).catch((error) => {
@@ -22,11 +23,11 @@ router.get('/categoria', (req, res) => {
     })
 })
 
-router.get('/categoria/add', (req, res) => {
+router.get('/categoria/add', eAdmin, (req, res) => {
     res.render("admin/addcategoria")
 })
 
-router.post('/categoria/new', (req, res) => {
+router.post('/categoria/new', eAdmin, (req, res) => {
 
     let erros = []
 
@@ -68,7 +69,7 @@ router.post('/categoria/new', (req, res) => {
 
 // Botão de editar blog
 
-router.get('/categoria/edit/:id', (req, res) => {
+router.get('/categoria/edit/:id', eAdmin, (req, res) => {
     Categoria.findOne({ _id: req.params.id }).lean().then((categoria) => {
         res.render("admin/editcategoria", { categoria: categoria })
     }).catch((error) => {
@@ -78,7 +79,7 @@ router.get('/categoria/edit/:id', (req, res) => {
 
 })
 
-router.post('/categoria/edit', (req, res) => {
+router.post('/categoria/edit', eAdmin, (req, res) => {
 
     let erros = []
 
@@ -120,7 +121,7 @@ router.post('/categoria/edit', (req, res) => {
         })
 })
 
-router.post("/categoria/del", (req, res) => {
+router.post("/categoria/del", eAdmin, (req, res) => {
     Categoria.deleteOne({ _id: req.body.id }).then(() => {
         req.flash("success_msg", "Categoria excluída com sucesso!")
         res.redirect("/admin/categoria")
@@ -130,7 +131,7 @@ router.post("/categoria/del", (req, res) => {
     })
 })
 
-router.get("/postagem", (req, res) => {
+router.get("/postagem", eAdmin, (req, res) => {
 
     Post.find().lean().populate({ path: 'cat', strictPopulate: false }).sort({ date: "desc" }).then((postagem) => {
         res.render("admin/posts", { postagem: postagem })
@@ -141,7 +142,7 @@ router.get("/postagem", (req, res) => {
 
 })
 
-router.get("/postagem/add", (req, res) => {
+router.get("/postagem/add", eAdmin, (req, res) => {
     Categoria.find().lean().then((categoria) => {
         res.render("admin/addpost", { categoria: categoria })
     }).catch((error) => {
@@ -151,7 +152,7 @@ router.get("/postagem/add", (req, res) => {
 
 })
 
-router.post("/postagem/new", (req, res) => {
+router.post("/postagem/new", eAdmin, (req, res) => {
 
     let erros = []
 
@@ -201,7 +202,7 @@ router.post("/postagem/new", (req, res) => {
     }
 })
 
-router.get("/postagem/edit/:id", (req, res) => {
+router.get("/postagem/edit/:id", eAdmin, (req, res) => {
 
     Post.findOne({ _id: req.params.id }).populate("cat").lean().then((postagem) => {
 
@@ -221,7 +222,7 @@ router.get("/postagem/edit/:id", (req, res) => {
 
 })
 
-router.post("/postagem/edit", (req, res) => {
+router.post("/postagem/edit", eAdmin, (req, res) => {
 
     let erros = []
 
@@ -295,7 +296,7 @@ router.post("/postagem/edit", (req, res) => {
 
 })
 
-router.post("/postagem/del", (req, res) => {
+router.post("/postagem/del", eAdmin, (req, res) => {
 
     Post.deleteOne({ _id: req.body.id })
         .then(() => {

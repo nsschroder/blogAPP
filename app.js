@@ -38,6 +38,7 @@ app.use((req, res, next) => {
     res.locals.error_msg = req.flash("error_msg")
     res.locals.error = req.flash("error")
     //   console.log("ERRO:", res.locals.error)
+    res.locals.user = req.user || null;
     next()
 })
 
