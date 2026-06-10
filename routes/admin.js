@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import Categoria from '../models/Categoria.js'
 import Post from '../models/Post.js'
 import { eAdmin } from '../helpers/eAdmin.js'
+import User from '../models/User.js'
 
 const router = express.Router()
 
@@ -316,5 +317,83 @@ router.post("/postagem/del", eAdmin, (req, res) => {
 
 })
 
+router.get("/users", eAdmin, (req, res) => {
+
+    User.find().lean().then((users) => {
+        res.render("admin/users", {
+            users: users
+        })
+    })
+
+})
+
+router.post("/users/admin", eAdmin, (req, res) => {
+
+    User.findByIdAndUpdate(
+        req.body.id,
+        {
+            eAdmin: 1
+        }
+    )
+        .then(() => {
+
+            req.flash(
+                "success_msg",
+                "Usuário promovido para administrador"
+            )
+
+            res.redirect("/admin/users")
+
+        })
+        .catch(() => {
+
+            req.flash(
+                "error_msg",
+                "Erro ao alterar permissões"
+            )
+
+            res.redirect("/admin/users")
+
+        })
+
+})
+router.post("/users/removeadmin", eAdmin, (req, res) => {
+
+    if (req.user.id == req.body.id) {
+
+        req.flash(
+            "error_msg",
+            "Você não pode remover suas próprias permissões."
+        )
+
+        return res.redirect("/admin/users")
+    }
+
+    User.findByIdAndUpdate(
+        req.body.id,
+        { eAdmin: 0 }
+    )
+        .then(() => {
+
+            req.flash(
+                "error_msg",
+                "Permissão de administrador removida"
+            )
+
+            res.redirect("/admin/users")
+
+        })
+        .catch(() => {
+
+            req.flash(
+                "error_msg",
+                "Erro ao remover permissão"
+            )
+
+            res.redirect("/admin/users")
+
+        })
+
+})
 
 export default router
