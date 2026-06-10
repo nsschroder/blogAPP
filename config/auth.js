@@ -9,9 +9,10 @@ export default function (passport) {
             { usernameField: "email" },
             (email, password, done) => {
 
+                //   console.log("Tentando login:", email)
                 User.findOne({ email: email })
                     .then((user) => {
-
+                        //   console.log("Usuário:", user)
                         if (!user) {
                             return done(null, false, {
                                 message: "Essa conta não existe"
@@ -22,7 +23,7 @@ export default function (passport) {
                             password,
                             user.password,
                             (error, isMatch) => {
-
+                                //   console.log("isMatch =", isMatch)
                                 if (error) {
                                     return done(error)
                                 }

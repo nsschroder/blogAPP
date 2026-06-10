@@ -9,6 +9,11 @@ import flash from 'connect-flash'
 import Post from './models/Post.js'
 import Categoria from './models/Categoria.js'
 import users from './routes/users.js'
+import passport from 'passport'
+import auth from './config/auth.js'
+
+auth(passport)
+
 
 const app = express()
 
@@ -20,12 +25,19 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }))
+
+// PASSPORT
+app.use(passport.initialize())
+app.use(passport.session())
+
 app.use(flash())
 
 // MIDDLEWARE GLOBAL
 app.use((req, res, next) => {
     res.locals.success_msg = req.flash("success_msg")
     res.locals.error_msg = req.flash("error_msg")
+    res.locals.error = req.flash("error")
+    //   console.log("ERRO:", res.locals.error)
     next()
 })
 
